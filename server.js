@@ -30,7 +30,7 @@ const server = app.listen(PORT, () => {
 
 const io = socket(server, socketCorsOptions);
 
-const db = require("../db");
+const db = require("./db");
 app.get('/', (req, res) => {
     const testSchema = new db.Schema({
         text: { type: String },
