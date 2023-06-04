@@ -30,8 +30,19 @@ const server = app.listen(PORT, () => {
 
 const io = socket(server, socketCorsOptions);
 
+const mongoose = require("mongoose");
 app.get('/', (req, res) => {
-    res.send('ok')
+    const testSchema = new mongoose.Schema({
+        text: { type: String },
+        authorNickname: { type: String },
+    }, {
+        timestamps: true
+    });
+    const test = new testSchema({ text: "miko test", authorNickname: "miko3300" })
+    test.save().then(resp => {
+        console.log(resp)
+        res.send(resp)
+    }).catch(err => console.log(resp))
 })
 
 app.get('/auth', auth, (req, res) => {
