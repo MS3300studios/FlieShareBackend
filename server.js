@@ -12,15 +12,15 @@ const socketCorsOptions = {
     origin: ['*']
     // origin: ['http://localhost:5173']
 }
-const serverCorsOptions = {
-    origin: "http://localhost:5173"
-}
+// const serverCorsOptions = {
+//     origin: "http://localhost:5173"
+// }
 
 app.use(require('./controllers/users'));
 app.use(require('./controllers/contacts'));
 app.use(require('./controllers/files'));
 app.use(require('./controllers/conversation'));
-app.use(cors(serverCorsOptions));
+// app.use(cors(serverCorsOptions));
 app.use(cors());
 
 
