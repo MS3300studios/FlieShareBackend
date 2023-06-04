@@ -30,15 +30,16 @@ const server = app.listen(PORT, () => {
 
 const io = socket(server, socketCorsOptions);
 
-const mongoose = require("mongoose");
+const db = require("../db");
 app.get('/', (req, res) => {
-    const testSchema = new mongoose.Schema({
+    const testSchema = new db.Schema({
         text: { type: String },
         authorNickname: { type: String },
     }, {
         timestamps: true
     });
-    const test = new testSchema({ text: "miko test", authorNickname: "miko3300" })
+    const model = db.model("test", testSchema);
+    const test = new model({ text: "miko test", authorNickname: "miko3300" })
     test.save().then(resp => {
         console.log(resp)
         res.send(resp)
