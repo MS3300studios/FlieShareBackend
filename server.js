@@ -54,6 +54,8 @@ io.on("connection", socket => {
     socket.on('message', message => {  //message: { conversationId: currentConversation._id, text: newMessage, authorNickname: userData.nickname }
         //save message based on schema
         Conversation.findById(message.conversationId).exec().then(conv => {
+            const initLen = conv.messages.length
+            
             const newMessage = { authorNickname: message.authorNickname, text: message.text }
             conv.messages = [...conv.messages, newMessage]
             conv.save().then(resp => {
@@ -62,6 +64,17 @@ io.on("connection", socket => {
                     message: {...message, createdAt: Date.now() },
                 })
             })
+
+            if(initLen === 0){
+                const messageRecepient = conv.participants.filter(par => par.nickname !== message.authorNickname)[0]
+                io.to(messageRecepient._id.toString()).emit('newConversation', {
+                    message: {
+                        userId: socket.id,
+                        message: { ...message, createdAt: Date.now() }
+                    },
+                    newConvId: message.conversationId
+                })
+            }
         })
 
     })
@@ -69,5 +82,10 @@ io.on("connection", socket => {
     socket.on('join', ({conversationId}) => {
         console.log(`a user joined room nr: ${conversationId}`)
         socket.join(conversationId); //user is joining a specific rom
+    })
+    
+    socket.on('userChannel', ({userId}) => {
+        console.log(`a user joined their channel: ${userId}`)
+        socket.join(userId); //user is joining a specific rom
     })
 })
